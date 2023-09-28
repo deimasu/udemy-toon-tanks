@@ -26,9 +26,9 @@ private:
 	UPROPERTY(VisibleAnywhere, Category="Components")
 	class UCameraComponent* Camera;
 
-	UPROPERTY(EditAnywhere, Category="Gameplay")
+	UPROPERTY(EditAnywhere, Category="Movement")
 	float MoveSpeed{1.f};
-	UPROPERTY(EditAnywhere, Category="Gameplay")
+	UPROPERTY(EditAnywhere, Category="Movement")
 	float RotationSpeed{1.f};
 
 	void Move(float Value);

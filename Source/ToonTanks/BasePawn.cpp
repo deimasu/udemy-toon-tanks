@@ -2,6 +2,8 @@
 
 
 #include "BasePawn.h"
+
+#include "Projectile.h"
 #include "Components/CapsuleComponent.h"
 #include "Kismet/GameplayStatics.h"
 
@@ -35,4 +37,15 @@ void ABasePawn::RotateTurret(const FVector& LookAtTarget) const
 			UGameplayStatics::GetWorldDeltaSeconds(this),
 			25.f)
 	);
+}
+
+void ABasePawn::Fire()
+{
+	if (ProjectileSpawnPoint)
+	{
+		GetWorld()->SpawnActor<AProjectile>(
+			ProjectileClass,
+			ProjectileSpawnPoint->GetComponentLocation(),
+			ProjectileSpawnPoint->GetComponentRotation());
+	}
 }
