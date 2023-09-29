@@ -12,6 +12,9 @@ class TOONTANKS_API ATower : public ABasePawn
 {
 	GENERATED_BODY()
 
+public:
+	void HandleDestruction();
+	
 protected:
 	virtual void BeginPlay() override;
 

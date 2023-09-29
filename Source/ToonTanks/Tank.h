@@ -15,6 +15,10 @@ class TOONTANKS_API ATank : public ABasePawn
 public:
 	ATank();
 
+	void HandleDestruction();
+
+	APlayerController* GetTankPlayerController() const;
+
 protected:
 	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;
@@ -38,7 +42,7 @@ private:
 	// Called to bind functionality to input
 	virtual void SetupPlayerInputComponent(class UInputComponent* PlayerInputComponent) override;
 
-	APlayerController* PlayerControllerRef;
+	APlayerController* TankPlayerController;
 
 public:
 	// Called every frame
