@@ -15,11 +15,24 @@ class TOONTANKS_API AToonTanksGameMode : public AGameModeBase
 	GENERATED_BODY()
 
 public:
-	void ActorDied(AActor* ActorDied) const;
+	void ActorDied(AActor* ActorDied);
 
 protected:
 	virtual void BeginPlay() override;
+
+	UFUNCTION(BlueprintImplementableEvent)
+	void StartGame();
+
+	UFUNCTION(BlueprintImplementableEvent)
+	void GameOver(bool bWonGame);
 	
 private:
 	class ATank* Tank;
+	class AToonTanksPlayerController* ToonTanksPlayerController;
+
+	UPROPERTY(EditAnywhere, Category="Gameplay")
+	float StartDelay{4.f};
+
+	void HandleGameStart();
+	int GetEnemiesCount() const;
 };
