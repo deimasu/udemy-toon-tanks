@@ -19,6 +19,10 @@ public:
 
 	APlayerController* GetTankPlayerController() const;
 
+	virtual void Tick(float DeltaTime) override;
+
+	bool bAlive{true};
+
 protected:
 	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;
@@ -39,14 +43,11 @@ private:
 
 	void Turn(float Value);
 
+	void SetPaused();
+
 	// Called to bind functionality to input
 	virtual void SetupPlayerInputComponent(class UInputComponent* PlayerInputComponent) override;
 
 	APlayerController* TankPlayerController;
 
-public:
-	// Called every frame
-	virtual void Tick(float DeltaTime) override;
-
-	bool bAlive{true};
 };
