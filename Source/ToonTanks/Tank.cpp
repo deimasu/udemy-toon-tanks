@@ -80,7 +80,12 @@ void ATank::SetupPlayerInputComponent(UInputComponent* PlayerInputComponent)
 void ATank::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
-
+	
+	if (!InputEnabled())
+	{
+		return;
+	}
+	
 	if (TankPlayerController)
 	{
 		FHitResult HitResult;

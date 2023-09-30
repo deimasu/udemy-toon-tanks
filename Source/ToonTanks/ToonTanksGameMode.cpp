@@ -6,6 +6,7 @@
 #include "Tank.h"
 #include "ToonTanksPlayerController.h"
 #include "Tower.h"
+#include "GameFramework/GameUserSettings.h"
 #include "Kismet/GameplayStatics.h"
 
 
@@ -37,7 +38,8 @@ void AToonTanksGameMode::ActorDied(AActor* ActorDied)
 void AToonTanksGameMode::BeginPlay()
 {
 	Super::BeginPlay();
-	
+
+	SetInitialGameSettings();
 	HandleGameStart();
 }
 
@@ -73,4 +75,14 @@ int AToonTanksGameMode::GetEnemiesCount() const
 	TArray<AActor*> TowerActors;
 	UGameplayStatics::GetAllActorsOfClass(this, ATower::StaticClass(), TowerActors);
 	return TowerActors.Num();
+}
+
+void AToonTanksGameMode::SetInitialGameSettings()
+{
+	UGameUserSettings* Settings = UGameUserSettings::GetGameUserSettings();
+	Settings->SetOverallScalabilityLevel(1);
+	Settings->SetFullscreenMode(EWindowMode::Fullscreen);
+	Settings->SetVSyncEnabled(true);
+	Settings->SetScreenResolution(FIntPoint(1920, 1080));
+	Settings->ApplySettings(true);
 }

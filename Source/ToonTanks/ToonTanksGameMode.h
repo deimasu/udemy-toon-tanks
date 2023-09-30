@@ -38,4 +38,5 @@ private:
 
 	void HandleGameStart();
 	int GetEnemiesCount() const;
+	void SetInitialGameSettings();
 };
