@@ -32,6 +32,24 @@ private:
 	UPROPERTY(VisibleAnywhere, Category="Movement")
 	class UProjectileMovementComponent* MovementComponent;
 
+	UPROPERTY(VisibleAnywhere, Category="Appearance")
+	UParticleSystemComponent* SmokeTrailParticleComponent;
+
+	UPROPERTY(EditAnywhere, Category="Appearance")
+	UParticleSystem* HitParticles;
+
+	UPROPERTY(EditAnywhere, Category="Sound")
+	USoundBase* LaunchSound;
+
+	UPROPERTY(EditAnywhere, Category="Sound")
+	USoundBase* HitSound;
+
+	UPROPERTY(EditAnywhere, Category="Appearance")
+	TSubclassOf<UCameraShakeBase> HitCameraShakeClass;
+
+	UPROPERTY(EditAnywhere, Category="Appearance")
+	TSubclassOf<UCameraShakeBase> LaunchCameraShakeClass;
+
 	UFUNCTION()
 	void OnHit(UPrimitiveComponent* HitComp, AActor* OtherActor, UPrimitiveComponent* OtherComp, FVector NormalImpulse,
 	           const FHitResult& Hit);

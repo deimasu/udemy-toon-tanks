@@ -37,7 +37,7 @@ void ATower::Tick(float DeltaSeconds)
 
 void ATower::CheckFireCondition()
 {
-	if (InFireRange() && !Target->IsHidden())
+	if (InFireRange() && Target->bAlive)
 	{
 		Fire();
 	}
