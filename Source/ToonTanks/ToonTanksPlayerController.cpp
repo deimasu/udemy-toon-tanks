@@ -3,6 +3,8 @@
 
 #include "ToonTanksPlayerController.h"
 
+#include "GameFramework/Pawn.h"
+
 void AToonTanksPlayerController::SetPlayerEnabledState(bool bPlayerEnabled, bool bNewShowMouseCursor)
 {
 	if (bPlayerEnabled)

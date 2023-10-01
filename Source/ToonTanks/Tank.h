@@ -21,6 +21,8 @@ public:
 
 	virtual void Tick(float DeltaTime) override;
 
+	void MuteTankEngine();
+
 	bool bAlive{true};
 
 protected:
@@ -30,15 +32,21 @@ protected:
 private:
 	UPROPERTY(VisibleAnywhere, Category="Components")
 	class USpringArmComponent* SpringArm;
-
 	UPROPERTY(VisibleAnywhere, Category="Components")
 	class UCameraComponent* Camera;
 
 	UPROPERTY(EditAnywhere, Category="Movement")
-	float MoveSpeed{1.f};
+	float MoveSpeed{0.f};
+	UPROPERTY(EditAnywhere, Category="Movement")
+	float MoveSpeedLimit{1.f};
+	UPROPERTY(EditAnywhere, Category="Movement")
+	float Acceleration{1.f};
 	UPROPERTY(EditAnywhere, Category="Movement")
 	float RotationSpeed{1.f};
 
+	float ContraryAccelerationMultiplier{4.f};
+	float IdleSpeedDecreaseMultiplier{5.f};
+	
 	void Move(float Value);
 
 	void Turn(float Value);
@@ -49,5 +57,6 @@ private:
 	virtual void SetupPlayerInputComponent(class UInputComponent* PlayerInputComponent) override;
 
 	APlayerController* TankPlayerController;
+	class UAudioComponent* EngineSound;
 
 };

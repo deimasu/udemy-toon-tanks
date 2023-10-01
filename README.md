@@ -18,6 +18,7 @@ In this game players need to control tank that can shoot projectiles. The goal i
 - Spawning ParticleSystem in C++
 - Spawning sounds in C++
 - Creating and using camera shakes
+- Using sounds cross-fading for engine sounds (SoundCue)
 
 ## Download Windows Build
 You can download the built version of the project [here](https://drive.google.com/file/d/1f2Db4JKxgP2RO-FV3FfGh1MgKHOv2pfd/view?usp=sharing).

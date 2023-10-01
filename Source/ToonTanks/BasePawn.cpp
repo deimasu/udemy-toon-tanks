@@ -4,7 +4,9 @@
 #include "BasePawn.h"
 
 #include "Projectile.h"
+#include "Camera/CameraShakeBase.h"
 #include "Components/CapsuleComponent.h"
+#include "Components/StaticMeshComponent.h"
 #include "Kismet/GameplayStatics.h"
 
 // Sets default values

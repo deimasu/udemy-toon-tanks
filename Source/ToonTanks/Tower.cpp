@@ -4,6 +4,7 @@
 #include "Tower.h"
 
 #include "Tank.h"
+#include "TimerManager.h"
 #include "Kismet/GameplayStatics.h"
 
 void ATower::HandleDestruction()

@@ -3,13 +3,15 @@
 
 #include "Tank.h"
 
+
 #include "ToonTanksGameMode.h"
 #include "Camera/CameraComponent.h"
+#include "Components/AudioComponent.h"
 #include "GameFramework/SpringArmComponent.h"
 #include "Kismet/GameplayStatics.h"
 
 ATank::ATank()
-{	
+{
 	SpringArm = CreateDefaultSubobject<USpringArmComponent>(TEXT("Spring Arm"));
 	SpringArm->SetupAttachment(RootComponent);
 
@@ -20,7 +22,7 @@ ATank::ATank()
 void ATank::HandleDestruction()
 {
 	Super::HandleDestruction();
-	
+
 	SetActorHiddenInGame(true);
 	SetActorTickEnabled(false);
 	bAlive = false;
@@ -37,25 +39,48 @@ void ATank::BeginPlay()
 	Super::BeginPlay();
 
 	TankPlayerController = Cast<APlayerController>(GetController());
+	EngineSound = FindComponentByClass<UAudioComponent>();
+
+	if (EngineSound)
+	{
+		EngineSound->SetVolumeMultiplier(1.5f);
+	}
 }
 
 void ATank::Move(float Value)
 {
-	FVector DeltaLocation {FVector::ZeroVector};
-	DeltaLocation.X = Value * MoveSpeed * UGameplayStatics::GetWorldDeltaSeconds(this);
+	double DeltaTime = UGameplayStatics::GetWorldDeltaSeconds(this);
+
+	// if any input
+	if (Value != 0.f)
+	{
+		// if player does contrary motion (Value and MoveSpeed signs are different) enforce contrary acceleration
+		const float LocalAcceleration = Value * MoveSpeed > 0 ? Acceleration : Acceleration * ContraryAccelerationMultiplier;
+		MoveSpeed += LocalAcceleration * Value * DeltaTime;
+		MoveSpeed = MoveSpeed > 0 ? std::min(MoveSpeed, MoveSpeedLimit) : std::max(MoveSpeed, -MoveSpeedLimit);
+	}
+	else
+	{
+		// decrease speed when no input from player
+		MoveSpeed /= 1.f + DeltaTime * IdleSpeedDecreaseMultiplier;
+	}
+
+	FVector DeltaLocation{FVector::ZeroVector};
+	DeltaLocation.X = MoveSpeed * DeltaTime;
+
 	AddActorLocalOffset(DeltaLocation, true);
 }
 
 void ATank::Turn(float Value)
 {
-	FRotator DeltaRotation {FRotator::ZeroRotator};
+	FRotator DeltaRotation{FRotator::ZeroRotator};
 	DeltaRotation.Yaw = Value * RotationSpeed * UGameplayStatics::GetWorldDeltaSeconds(this);
-	
+
 	if (InputComponent->GetAxisValue(TEXT("MoveForward")) < 0)
 	{
 		DeltaRotation *= -1;
 	}
-	
+
 	AddActorLocalRotation(DeltaRotation, true);
 }
 
@@ -79,16 +104,29 @@ void ATank::SetupPlayerInputComponent(UInputComponent* PlayerInputComponent)
 void ATank::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
-	
+
 	if (!InputEnabled())
 	{
 		return;
 	}
-	
+
 	if (TankPlayerController)
 	{
 		FHitResult HitResult;
 		TankPlayerController->GetHitResultUnderCursor(ECC_Visibility, false, HitResult);
 		RotateTurret(HitResult.ImpactPoint);
+	}
+
+	if (EngineSound)
+	{
+		EngineSound->SetFloatParameter(TEXT("RPM"), std::abs(MoveSpeed));
+	}
+}
+
+void ATank::MuteTankEngine()
+{
+	if (EngineSound)
+	{
+		EngineSound->SetVolumeMultiplier(0.f);
 	}
 }

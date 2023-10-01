@@ -4,6 +4,7 @@
 #include "ToonTanksGameMode.h"
 
 #include "Tank.h"
+#include "TimerManager.h"
 #include "ToonTanksPlayerController.h"
 #include "Tower.h"
 #include "GameFramework/GameUserSettings.h"
@@ -14,6 +15,7 @@ void AToonTanksGameMode::ActorDied(AActor* ActorDied)
 {
 	if (ActorDied == Tank)
 	{
+		Tank->MuteTankEngine();
 		Tank->HandleDestruction();
 		if (ToonTanksPlayerController)
 		{
@@ -30,6 +32,7 @@ void AToonTanksGameMode::ActorDied(AActor* ActorDied)
 		{
 			ToonTanksPlayerController->SetPlayerEnabledState(false, true);
 			ToonTanksPlayerController->CurrentMouseCursor = EMouseCursor::Default;
+			Tank->MuteTankEngine();
 			GameOver(true);
 		}
 	}
