@@ -44,11 +44,6 @@ void ABasePawn::HandleDestruction()
 
 void ABasePawn::RotateTurret(const FVector& LookAtTarget) const
 {
-	if (!InputEnabled())
-	{
-		return;
-	}
-	
 	const FVector ToTarget{LookAtTarget - TurretMesh->GetComponentLocation()};
 	const FRotator LookAtRotation{FRotator(0.f, ToTarget.Rotation().Yaw, 0.f)};
 	TurretMesh->SetWorldRotation(
@@ -64,9 +59,12 @@ void ABasePawn::Fire()
 {
 	if (ProjectileSpawnPoint)
 	{
+		FActorSpawnParameters SpawnParams;
+		SpawnParams.Owner = this;
 		GetWorld()->SpawnActor<AProjectile>(
 			ProjectileClass,
 			ProjectileSpawnPoint->GetComponentLocation(),
-			ProjectileSpawnPoint->GetComponentRotation())->SetOwner(this);
+			ProjectileSpawnPoint->GetComponentRotation(),
+			SpawnParams);
 	}
 }

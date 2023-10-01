@@ -3,6 +3,10 @@
 
 #include "Projectile.h"
 
+#include "Camera/CameraShakeBase.h"
+#include "Components/CapsuleComponent.h"
+#include "Components/StaticMeshComponent.h"
+#include "GameFramework/DamageType.h"
 #include "GameFramework/ProjectileMovementComponent.h"
 #include "Kismet/GameplayStatics.h"
 #include "Particles/ParticleSystemComponent.h"
@@ -10,45 +14,28 @@
 // Sets default values
 AProjectile::AProjectile()
 {
- 	// Set this actor to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
 	PrimaryActorTick.bCanEverTick = false;
 
 	ProjectileMesh = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("Projectile Mesh"));
 	RootComponent = ProjectileMesh;
-
+	
+	CollisionCapsule = CreateDefaultSubobject<UCapsuleComponent>(TEXT("Collision Capsule"));
+	CollisionCapsule->SetupAttachment(RootComponent);
+	
 	MovementComponent = CreateDefaultSubobject<UProjectileMovementComponent>(TEXT("Movement Component"));
 
 	SmokeTrailParticleComponent = CreateDefaultSubobject<UParticleSystemComponent>(TEXT("Smoke Trail"));
 	SmokeTrailParticleComponent->SetupAttachment(RootComponent);
 }
 
-// Called when the game starts or when spawned
-void AProjectile::BeginPlay()
+void AProjectile::OnProjectileOverlap(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor,
+	UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult)
 {
-	Super::BeginPlay();
-
-	ProjectileMesh->OnComponentHit.AddDynamic(this, &AProjectile::OnHit);
-	if (LaunchSound)
+	if (OtherActor == GetOwner())
 	{
-		UGameplayStatics::PlaySoundAtLocation(this, LaunchSound, GetActorLocation());
+		return;
 	}
-	if (LaunchCameraShakeClass)
-	{
-		GetWorld()->GetFirstPlayerController()->ClientStartCameraShake(LaunchCameraShakeClass);
-	}
-}
-
-// Called every frame
-void AProjectile::Tick(float DeltaTime)
-{
-	Super::Tick(DeltaTime);
-
-}
-
-void AProjectile::OnHit(UPrimitiveComponent* HitComp, AActor* OtherActor, UPrimitiveComponent* OtherComp,
-	FVector NormalImpulse, const FHitResult& Hit)
-{
-	if (OtherActor && OtherActor != this && OtherActor != GetOwner())
+	if (OtherActor && OtherActor != this)
 	{
 		UGameplayStatics::ApplyDamage(
 			OtherActor,
@@ -74,3 +61,25 @@ void AProjectile::OnHit(UPrimitiveComponent* HitComp, AActor* OtherActor, UPrimi
 	Destroy();
 }
 
+// Called when the game starts or when spawned
+void AProjectile::BeginPlay()
+{
+	Super::BeginPlay();
+
+	CollisionCapsule->OnComponentBeginOverlap.AddDynamic(this, &AProjectile::OnProjectileOverlap);
+	
+	if (LaunchSound)
+	{
+		UGameplayStatics::PlaySoundAtLocation(this, LaunchSound, GetActorLocation());
+	}
+	if (LaunchCameraShakeClass)
+	{
+		GetWorld()->GetFirstPlayerController()->ClientStartCameraShake(LaunchCameraShakeClass);
+	}
+}
+
+// Called every frame
+void AProjectile::Tick(float DeltaTime)
+{
+	Super::Tick(DeltaTime);
+}
